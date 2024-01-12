@@ -1,4 +1,4 @@
-import axios, {AxiosInstance} from axios;
+import {AxiosInstance} from "axios";
 
 const jwjwSearchApi = async (BaseApi: AxiosInstance, getFlag: Boolean, url: string, param: string, success: (data: unknown) => void, fail: (error: unknown) => void) => {
     if(getFlag){
@@ -7,3 +7,5 @@ const jwjwSearchApi = async (BaseApi: AxiosInstance, getFlag: Boolean, url: stri
         BaseApi.post(url, JSON.stringify(param)).then(success).catch(fail);
     }
 }
+
+export {jwjwSearchApi};
