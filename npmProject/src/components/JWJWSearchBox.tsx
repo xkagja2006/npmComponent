@@ -1,30 +1,51 @@
-import React, { useEffect, useRef, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import {AxiosInstance} from "axios";
 import {jwjwSearchApi} from '../api/JWJWSearch';
 
-const JWJWSearchBox = ({BaseApi, getFlag, url, result, fail} : {BaseApi : AxiosInstance, getFlag : Boolean, url : string, result : (data: unknown) => void, fail : (data: unknown) => void}) =>{
+type props = {
+    buttonFlag? : boolean;
+    containerClassName? : string;
+    baseApi : AxiosInstance;
+    getFlag : boolean;
+    url : string;
+    result : (data : unknown) => void;
+    fail? : (data: unknown) => void;
+    noDataText? : string;
+}
+
+const JWJWSearchBox = (props : props) =>{
     const [param, setParam] = useState("");
     const listRef = useRef<HTMLUListElement>(null);
-    const data = ['a', 'b', 'c'];
-    const [list, setList] = useState(data);
+    const [list, setList] = useState<string[]>([]);
     const success = (data : unknown) => {
         setList(() => data as string[]);
     }
-    const setListString = async() => {
-        await jwjwSearchApi(BaseApi, getFlag, url, param, success ,fail);
-    }
 
+    const requestSearchApi = async () => {
+        await jwjwSearchApi(props.baseApi, props.getFlag, props.url, param, success , props.fail != null ? props.fail : (error: unknown) => console.log(error));
+    };
+
+    //값이 바뀌었을 때 연관검색어 api 요청 보내기
     useEffect(() => {
-        console.log(param);
-        setListString();
-    },[param])
+        if(param != null && param != "") requestSearchApi();
+    },[param]);
     
+    //검색어 리스트가 바뀌었을 때 연관검색어를 보여줄 ul 업데이트
     useEffect(() => {
-        for(let a = 0; a < list.length; a++){
-            const element = document.createElement('li');
-            const textNode = document.createTextNode(list[a]);
-            element.appendChild(textNode);
-            listRef.current?.appendChild(element);
+        if(list.length > 0){
+            list.forEach((string) => {
+                const LiElement = document.createElement('li');
+                LiElement.style.cursor = "pointer";
+                LiElement.addEventListener("click", () => {
+                    returnResult(string);
+                });
+                LiElement.textContent = string;
+                listRef.current?.appendChild(LiElement);
+            });
+        } else if(param != ""){ //검색어가 있는데 리스트가 비어있을 때 -> 연관된 검색어 결과가 나타나지 않을 때
+                const LiElement = document.createElement('li');
+                LiElement.textContent = props.noDataText != null ? props.noDataText : "연관 검색어가 없어요";
+                listRef.current?.appendChild(LiElement);
         }
         return () =>{
             while(listRef.current?.hasChildNodes()){
@@ -32,19 +53,25 @@ const JWJWSearchBox = ({BaseApi, getFlag, url, result, fail} : {BaseApi : AxiosI
                     listRef.current?.removeChild(listRef.current.firstChild);
             }
         }
-    },[list])
+    },[list]);
 
-    const returnResult = (e : unknown) => {
-        if(e.target !== null && e.target.value === 13)
+    //최종 검색 값을 보내주는 함수
+    function returnResult(finalParam: string = param): void {
+        finalParam = finalParam.trim();
+        if(finalParam == null || finalParam == ""){ //값이 비어있으면
+            alert("값이 비어있어요!");
+            return;
+        }
+
+
+        props.result(finalParam);
     }
 
     return(
-        <div className="container">
-            <input type="text" onChange={(e) => {setParam(e.target.value)}} onKeyUp={returnResult} value={param} />
-            <button>버튼</button>
-            <ul ref={listRef}>
-                
-            </ul>
+        <div className={`${props.containerClassName != null ? props.containerClassName : "JWJWSearchContainer"}`}>
+            <input type="text" onChange={(e) => {setParam(e.target.value)}} onKeyUp={(e) => {if(e.key == 'Enter') returnResult()}} value={param} />
+            {props.buttonFlag == null || props.buttonFlag ? <button onClick={() => {returnResult()}}>버튼</button> : null}
+            <ul ref={listRef}></ul>
         </div>
     )
 }
