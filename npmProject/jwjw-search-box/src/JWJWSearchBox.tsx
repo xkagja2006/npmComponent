@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AxiosInstance } from "axios";
-import { jwjwSearchApi } from "../api/JWJWSearch";
+import { jwjwSearchApi } from "./api/JWJWSearch";
 import React from "react";
 
 type props = {
