@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/xkagja2006/npmComponent/npmProject/jwjw-search-box"
+    "url": "https://github.com/xkagja2006/npmComponent/tree/main/npmProject/jwjw-search-box"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
