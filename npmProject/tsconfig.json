@@ -6,6 +6,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "declaration": true,
+    "allowSyntheticDefaultImports": true,
     "outDir": "./dist",
 
     /* Bundler mode */
@@ -22,6 +23,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["./src/lib/**/*.tsx", "./src/lib/**/*.ts"],
+  "include": ["./src/**/*.tsx", "./src/**/*.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

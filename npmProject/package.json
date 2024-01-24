@@ -1,10 +1,14 @@
 {
-  "name": "JWJWSearchBox",
+  "name": "jwjw-search-box",
   "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "version": "0.1.0",
+  "files": [
+    "/dist"
+  ],
+  "version": "0.1.5",
   "type": "module",
+  "module": "dist/index.js",
   "browser": "./browser/specific/main.js",
   "keywords": [
     "react",
@@ -27,7 +31,9 @@
     "prepare": "rm -rf dist && mkdir dist && tsc"
   },
   "dependencies": {
+    "@types/node": "^20.11.5",
     "axios": "^1.6.5",
+    "path": "^0.12.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -41,6 +47,10 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "vite-plugin-dts": "^3.7.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
