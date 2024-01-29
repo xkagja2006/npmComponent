@@ -1,7 +1,26 @@
 {
   "name": "jwjw-pagination",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "browser": "./browser/specific/main.js",
+  "module": "dist/index.js",
+  "files": [
+    "/dist"
+  ],
+  "keywords": [
+    "react",
+    "typescript"
+  ],
+  "contributors": [
+    "jeongmiiin",
+    "dayoung015"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xkagja2006/npmComponent/tree/main/npmProject/jwjw-pagination"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -20,7 +39,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "rm -rf dist && mkdir dist && tsc"
   },
   "browserslist": {
     "production": [
@@ -33,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

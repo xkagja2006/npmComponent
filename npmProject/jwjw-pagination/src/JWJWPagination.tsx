@@ -8,26 +8,107 @@ type props = {
 };
 
 const JWJWPagination = (props: props) => {
-  const [curPage, setCurPage] = useState("1");
+  const [curPage, setCurPage] = useState(1);
+  const [result, setResult] = useState([1]);
+  const totalPage = Math.ceil(props.totalListCnt/props.perPage);
+  const [canNext, setCanNext] = useState(true);
+  const [canPrev, setCanPrev] = useState(false);
   
-  const rendering = () => {
-    const lastPage = Math.ceil(props.totalListCnt/props.perPage);
-    const result = [];
-    for (let i = 1; i <= lastPage; i++) {
-      result.push(<span key={i}>{i} </span>);
+  const setList = () => {
+    let listLastIdx = curPage + props.paginationsRange - (curPage % props.paginationsRange) <= totalPage ?
+    curPage + props.paginationsRange - (curPage % props.paginationsRange) : totalPage; 
+
+    let listFirstIdx = curPage - (curPage % props.paginationsRange) + 1 >= 1 ? 
+    curPage - (curPage % props.paginationsRange) + 1 : 1; 
+
+    if(curPage % props.paginationsRange == 0){
+      listLastIdx = curPage;
+      listFirstIdx = curPage - props.paginationsRange + 1;
     }
-    return result;
+   
+    setResult([]);
+    
+    let tmp = [];
+    for (let i = listFirstIdx; i <= listLastIdx; i++) {
+      tmp.push(i);
+    }
+    setResult(tmp);
   };
+  
+  useEffect(() =>{
+    if(curPage <= props.paginationsRange)
+      setCanPrev(false);
+    else 
+      setCanPrev(true);
+    if(curPage >= totalPage - props.paginationsRange + 1)
+      setCanNext(false);
+    else
+      setCanNext(true);
+    setList();
+    props.result({
+      curPage : curPage,
+      startIdx : (curPage - 1) * props.perPage + 1,
+      endIdx : curPage * props.perPage,
+    });
+  },[curPage])
+
+  const start = () => {
+    setCurPage(1);
+  }
+  
+  const prev = () => {
+    const newIdx = curPage % props.paginationsRange == 0 ? 
+    curPage - props.paginationsRange:
+    curPage - (curPage % props.paginationsRange);
+    setCurPage(newIdx);
+  }
+
+  const next = () => {
+    const newIdx = curPage % props.paginationsRange == 0 ? 
+    curPage - (curPage % props.paginationsRange) + 1 : 
+    curPage + props.paginationsRange - (curPage % props.paginationsRange) + 1
+    setCurPage(newIdx);
+  }
+  
+  const end = () => {
+    setCurPage(totalPage - props.paginationsRange + 1);
+  }
 
   return (
     <div>
-      <span> &lt;&lt; </span>
-      <span> &lt; </span>
+      {canPrev ? (
+        <>
+          <span onClick={() => start()}> &lt;&lt; </span>
+          <span onClick={() => prev()}> &lt; </span>
+        </>
+        ) : (
+        <>
+          <span> &lt;&lt; </span>
+          <span> &lt; </span>
+        </>
+      )}
       <ul>
-        {rendering()}
+        {result.map((n) => {
+          return(
+            n==curPage ? (
+            <span className="active">{n} </span>
+            ) : (
+            <span onClick={() => setCurPage(n)}>{n} </span>
+            )
+          )
+        })}
       </ul>
-      <span> &gt; </span>
-      <span> &gt;&gt; </span>
+      {canNext ? (
+        <>
+          <span onClick={() => next()}> &gt; </span>
+          <span onClick={() => end()}> &gt;&gt; </span>
+        </>
+        ) : (
+        <>
+          <span> &gt; </span>
+          <span> &gt;&gt; </span>
+        </>
+      )}
     </div>
   );
 };
